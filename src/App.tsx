@@ -291,7 +291,7 @@ export default function App() {
   return (
     <div className="bg-slate-50 text-gray-800">
       {/* Header */}
-      <header className="bg-slate-50/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 border-b border-slate-200">
+            <header className="bg-slate-50/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 border-b border-slate-200">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <a href="#" className="flex items-center space-x-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
@@ -306,18 +306,20 @@ export default function App() {
             <a href="#how-it-works" className="text-gray-600 hover:text-blue-600 transition-colors">How it Works</a>
             <a href="#testimonials" className="text-gray-600 hover:text-blue-600 transition-colors">Testimonials</a>
             <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors">FAQ</a>
-          </nav>
-          <div className="flex items-center gap-4">
-            <a href="https://paypal.me/yourusername" target="_blank" className="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition-colors flex items-center gap-2">
-              <i data-lucide="coffee" className="w-5 h-5"></i>
-              Buy me a coffee
-            </a>
-            <a href="#app-container" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-              Get Started
-            </a>
-          </div>
+        </nav>
+        
+        <div className="hidden md:flex items-center gap-4">
+        
+          <a href="https://paypal.me/yourusername" target="_blank" className="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition-colors flex items-center gap-2">
+            <i data-lucide="coffee" className="w-5 h-5"></i>
+            Buy me a coffee
+          </a>
+          <a href="#app-container" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            Get Started
+          </a>
         </div>
-      </header>
+      </div>
+    </header>
 
       <main className="pt-24">
         <div className="container mx-auto px-6 text-center">
