@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cutoutify | Free AI Background Remover</title>
+    <link rel="icon" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3crect x='3' y='3' width='18' height='18' rx='2' ry='2'%3e%3c/rect%3e%3ccircle cx='8.5' cy='8.5' r='1.5'%3e%3c/circle%3e%3cpolyline points='21 15 16 10 5 21'%3e%3c/polyline%3e%3c/svg%3e">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .checkerboard {
+            background-image:
+                linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+                linear-gradient(135deg, #f0f0f0 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+                linear-gradient(135deg, transparent 75%, #f0f0f0 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 0, 10px -10px, 0px 10px;
+        }
+        .dropzone-active {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-slate-50/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 border-b border-slate-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                <h1 class="text-xl font-bold text-gray-900">Cutoutify</h1>
+            </a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#features" class="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 transition-colors">How it Works</a>
+                <a href="#testimonials" class="text-gray-600 hover:text-blue-600 transition-colors">Testimonials</a>
+                <a href="#faq" class="text-gray-600 hover:text-blue-600 transition-colors">FAQ</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <a href="https://paypal.me/yourusername" target="_blank" class="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition-colors flex items-center gap-2">
+                    <i data-lucide="coffee" class="w-5 h-5"></i>
+                    Buy me a coffee
+                </a>
+                <a href="#app-container" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24">
+        <div class="container mx-auto px-6 text-center">
+
+            <!-- Hero Section -->
+            <section class="py-12">
+                <div class="max-w-3xl mx-auto">
+                    <span class="bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">✨ Powered by AI</span>
+                    <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mt-4 leading-tight">Remove Image Backgrounds</h2>
+                    <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">100% automatically and free. Just upload an image to get a transparent background in seconds. No sign-up required.</p>
+                </div>
+            </section>
+
+            <!-- Uploader & Result Viewer -->
+            <section id="app-container" class="mt-2 mb-16 max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
+                
+                <!-- Initial Upload State -->
+                <div id="upload-state">
+                    <div id="dropzone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 md:p-12 text-center cursor-pointer hover:bg-gray-50 transition-colors">
+                        <div class="flex flex-col items-center justify-center space-y-4">
+                             <div class="bg-blue-100 p-4 rounded-full">
+                                <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            </div>
+                            <p class="text-lg font-semibold text-gray-700">Drag & drop an image here</p>
+                            <p class="text-gray-500">or</p>
+                            <button id="upload-button" type="button" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors z-10">
+                                Select File
+                            </button>
+                            <input type="file" id="file-input" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Sample Images -->
+                    <div class="mt-8">
+                        <p class="text-gray-500">No image? Try one of these:</p>
+                        <div class="mt-4 flex justify-center items-center gap-4 flex-wrap">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=200&h=200&auto=format&fit=crop" class="sample-image h-20 w-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" alt="Sample portrait">
+                            <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=200&h=200&auto=format&fit=crop" class="sample-image h-20 w-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" alt="Sample dog">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&h=200&auto=format&fit=crop" class="sample-image h-20 w-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" alt="Sample woman">
+                            <img src="https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?q=80&w=200&h=200&auto=format&fit=crop" class="sample-image h-20 w-20 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity" alt="Sample cat">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loading-state" class="hidden">
+                     <div class="flex flex-col items-center justify-center p-12 space-y-4">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        <p class="text-lg text-gray-600">Removing background...</p>
+                    </div>
+                </div>
+
+                <!-- Result State -->
+                <div id="result-state" class="hidden">
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <p class="font-semibold text-gray-700 text-left mb-2">Original</p>
+                            <img id="original-image" src="" alt="Original" class="w-full h-auto object-contain rounded-lg border border-slate-200" style="max-height: 400px;">
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 text-left mb-2">Background Removed</p>
+                            <div class="checkerboard rounded-lg border border-slate-200">
+                                <img id="result-image" src="" alt="Result" class="w-full h-auto object-contain" style="max-height: 400px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
+                         <button id="download-button" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition w-full md:w-auto">
+                            Download HD
+                        </button>
+                        <button id="upload-new-button" class="bg-gray-200 text-gray-800 px-8 py-3 rounded-lg font-bold text-lg hover:bg-gray-300 transition w-full md:w-auto">
+                            Upload New Image
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features" class="py-16">
+                <div class="max-w-5xl mx-auto">
+                    <h3 class="text-3xl font-bold text-gray-900">Why Choose Cutoutify?</h3>
+                    <p class="mt-4 text-lg text-gray-600">Our AI is trained to handle the most challenging conditions.</p>
+                    <div class="grid md:grid-cols-3 gap-8 mt-12 text-left">
+                        <div class="bg-white p-6 rounded-lg border border-slate-200">
+                            <i data-lucide="wand-2" class="w-10 h-10 text-blue-600 bg-blue-100 p-2 rounded-lg"></i>
+                            <h4 class="font-semibold text-xl mt-4">Precise AI Cutouts</h4>
+                            <p class="text-gray-600 mt-2">Get pixel-perfect accuracy for any image, from portraits to products. Our AI intelligently identifies and isolates the subject.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-slate-200">
+                            <i data-lucide="zap" class="w-10 h-10 text-blue-600 bg-blue-100 p-2 rounded-lg"></i>
+                            <h4 class="font-semibold text-xl mt-4">Blazing Fast</h4>
+                            <p class="text-gray-600 mt-2">Don't wait around. Your background is removed in about 5 seconds. Spend less time editing and more time creating.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-slate-200">
+                             <i data-lucide="shield-check" class="w-10 h-10 text-blue-600 bg-blue-100 p-2 rounded-lg"></i>
+                            <h4 class="font-semibold text-xl mt-4">Privacy Focused</h4>
+                            <p class="text-gray-600 mt-2">We respect your privacy. All uploaded images are processed securely and deleted from our servers automatically.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- How It Works Section -->
+            <section id="how-it-works" class="py-16 bg-white rounded-2xl border border-slate-200">
+                 <div class="max-w-5xl mx-auto">
+                    <h3 class="text-3xl font-bold text-gray-900">As Easy As 1-2-3</h3>
+                    <p class="mt-4 text-lg text-gray-600">Create transparent backgrounds in three simple steps.</p>
+                    <div class="grid md:grid-cols-3 gap-8 mt-12 text-center relative">
+                        <!-- Connecting line -->
+                        <div class="hidden md:block absolute top-8 left-0 w-full h-px bg-gray-200 -z-10"></div>
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-blue-600 text-white text-2xl font-bold rounded-full flex items-center justify-center">1</div>
+                            <div class="text-center">
+                                <h4 class="font-semibold text-xl">Upload Image</h4>
+                                <p class="text-gray-600 mt-1">Select or drag & drop the file you want to edit.</p>
+                            </div>
+                        </div>
+                         <div class="flex flex-col items-center gap-4">
+                            <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-blue-600 text-white text-2xl font-bold rounded-full flex items-center justify-center">2</div>
+                            <div class="text-center">
+                                <h4 class="font-semibold text-xl">AI Removes Background</h4>
+                                <p class="text-gray-600 mt-1">Our smart AI gets to work and automatically detects the subject.</p>
+                            </div>
+                        </div>
+                         <div class="flex flex-col items-center gap-4">
+                            <div class="relative z-10 flex-shrink-0 w-16 h-16 bg-blue-600 text-white text-2xl font-bold rounded-full flex items-center justify-center">3</div>
+                            <div class="text-center">
+                                <h4 class="font-semibold text-xl">Download</h4>
+                                <p class="text-gray-600 mt-1">Download your new image with a transparent background as a PNG file.</p>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </section>
+
+            <!-- Testimonials Section -->
+            <section id="testimonials" class="py-16">
+                <div class="max-w-5xl mx-auto">
+                    <h3 class="text-3xl font-bold text-gray-900">What Our Users Say</h3>
+                    <p class="mt-4 text-lg text-gray-600">Join thousands of happy creators who trust Cutoutify.</p>
+                    <div class="grid md:grid-cols-3 gap-8 mt-12 text-left">
+                        <div class="bg-white p-6 rounded-lg border border-slate-200">
+                            <div class="flex text-yellow-400">
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                            </div>
+                            <p class="text-gray-700 mt-4 italic">"Cutoutify is a lifesaver for my product photos. What used to take ages in Photoshop is now done in seconds. The quality is fantastic and it's saved me so much time."</p>
+                            <p class="font-semibold text-gray-800 mt-4">- Alex G.</p>
+                            <p class="text-sm text-gray-500">Online Store Owner</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-slate-200">
+                            <div class="flex text-yellow-400">
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                            </div>
+                            <p class="text-gray-700 mt-4 italic">"As a graphic designer, I'm always looking for tools that speed up my workflow. Cutoutify's results are incredibly accurate, even with tricky edges. An essential part of my toolkit now."</p>
+                            <p class="font-semibold text-gray-800 mt-4">- Maria K.</p>
+                            <p class="text-sm text-gray-500">Freelance Designer</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg border border-slate-200">
+                            <div class="flex text-yellow-400">
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                                <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                            </div>
+                            <p class="text-gray-700 mt-4 italic">"Making my social media posts pop is so much easier with Cutoutify. I can quickly remove backgrounds to create amazing collages. Can't believe this is free!"</p>
+                            <p class="font-semibold text-gray-800 mt-4">- David Chen</p>
+                            <p class="text-sm text-gray-500">Social Media Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section id="faq" class="py-16">
+                 <div class="max-w-3xl mx-auto text-left">
+                    <h3 class="text-3xl font-bold text-gray-900 text-center">Frequently Asked Questions</h3>
+                     <div class="mt-8 space-y-4">
+                        <details class="faq-item bg-white p-6 rounded-lg border border-slate-200 cursor-pointer">
+                            <summary class="font-semibold text-lg flex justify-between items-center">
+                                What image formats are supported?
+                                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform transform"></i>
+                            </summary>
+                            <p class="text-gray-600 mt-4">We support all common image formats, including JPG, PNG, WEBP, and HEIC. Feel free to upload any image, and our tool will handle the rest.</p>
+                        </details>
+                         <details class="faq-item bg-white p-6 rounded-lg border border-slate-200 cursor-pointer">
+                            <summary class="font-semibold text-lg flex justify-between items-center">
+                                Is it really free to use?
+                                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform transform"></i>
+                            </summary>
+                            <p class="text-gray-600 mt-4">Yes! Cutoutify is 100% free for unlimited images and high-resolution downloads. If you find the tool helpful, you can show your appreciation with the "Buy me a coffee" link.</p>
+                        </details>
+                         <details class="faq-item bg-white p-6 rounded-lg border border-slate-200 cursor-pointer">
+                            <summary class="font-semibold text-lg flex justify-between items-center">
+                                Do I need to sign up for an account?
+                                <i data-lucide="chevron-down" class="w-5 h-5 transition-transform transform"></i>
+                            </summary>
+                            <p class="text-gray-600 mt-4">No sign-up is required to remove backgrounds. You can start using the tool immediately. An account is only needed if you decide to upgrade to a Pro plan for more features.</p>
+                        </details>
+                     </div>
+                 </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-500">
+            <p>&copy; 2025 Cutoutify. All Rights Reserved.</p>
+            <div class="mt-4 space-x-6">
+                 <a href="#" class="hover:text-blue-600">Terms of Service</a>
+                 <a href="#" class="hover:text-blue-600">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const dropzone = document.getElementById('dropzone');
+        const uploadButton = document.getElementById('upload-button');
+        const fileInput = document.getElementById('file-input');
+        const sampleImages = document.querySelectorAll('.sample-image');
+
+        const uploadState = document.getElementById('upload-state');
+        const loadingState = document.getElementById('loading-state');
+        const resultState = document.getElementById('result-state');
+
+        const originalImage = document.getElementById('original-image');
+        const resultImage = document.getElementById('result-image');
+        const downloadButton = document.getElementById('download-button');
+        const uploadNewButton = document.getElementById('upload-new-button');
+        
+        // --- Event Listeners ---
+        
+        uploadButton.addEventListener('click', () => fileInput.click());
+        
+        dropzone.addEventListener('click', (e) => {
+            // Clicks on the button inside the dropzone should not also trigger this.
+            if (e.target.id === 'upload-button') return;
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        sampleImages.forEach(img => {
+            img.addEventListener('click', async () => {
+                showState('loading');
+                try {
+                    // Using a CORS proxy for demo purposes to fetch unsplash images.
+                    // In a real app, you'd host these images yourself.
+                    const response = await fetch(`https://cors-anywhere.herokuapp.com/${img.src}`);
+                    const blob = await response.blob();
+                    const file = new File([blob], "sample.jpg", { type: blob.type });
+                    handleFile(file);
+                } catch (error) {
+                    console.error("Error fetching sample image:", error);
+                    // Use a more user-friendly message without alert()
+                    const uploadInfo = dropzone.querySelector('p');
+                    uploadInfo.textContent = 'Could not load sample. Please upload an image.';
+                    uploadInfo.classList.add('text-red-500');
+                    showState('upload'); // Go back to upload state on error
+                }
+            });
+        });
+
+        // --- Drag and Drop ---
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, e => e.preventDefault(), false);
+            document.body.addEventListener(eventName, e => e.preventDefault(), false);
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => dropzone.classList.add('dropzone-active'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => dropzone.classList.remove('dropzone-active'), false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        // Reset button
+        uploadNewButton.addEventListener('click', () => {
+            showState('upload');
+            fileInput.value = ''; // Clear file input
+        });
+
+        // --- Core Logic ---
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                const uploadInfo = dropzone.querySelector('p');
+                uploadInfo.textContent = 'Please upload a valid image file.';
+                uploadInfo.classList.add('text-red-500');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imageUrl = e.target.result;
+                originalImage.src = imageUrl;
+                
+                showState('loading');
+                
+                // ** SIMULATED BACKGROUND REMOVAL **
+                setTimeout(() => {
+                    // In a real app, this `resultImageUrl` would come from your API
+                    const resultImageUrl = imageUrl; 
+                    resultImage.src = resultImageUrl;
+                    
+                    downloadButton.onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = resultImageUrl;
+                        a.download = 'cutoutify_removed_bg.png';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    };
+                    
+                    showState('result');
+                }, 2000); // Simulate 2-second processing time
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showState(state) {
+            uploadState.classList.add('hidden');
+            loadingState.classList.add('hidden');
+            resultState.classList.add('hidden');
+
+            if (state === 'upload') {
+                uploadState.classList.remove('hidden');
+            } else if (state === 'loading') {
+                loadingState.classList.remove('hidden');
+            } else if (state === 'result') {
+                resultState.classList.remove('hidden');
+            }
+        }
+        
+        // --- FAQ Animation ---
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const summary = item.querySelector('summary');
+            const icon = summary.querySelector('i');
+            item.addEventListener('toggle', () => {
+                if(item.open) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
+
